@@ -41,6 +41,7 @@ body {
 .movie .hover {
   display: none;
   padding: 0.5rem;
+  align-self: center;
 }
 
 .movie:hover .hover {
@@ -48,12 +49,8 @@ body {
 }
 
 .movie .loading {
-  display: none;
   padding: 0.5rem;
-}
-
-.movie.isLoading .loading {
-  display: block;
+  align-self: center;
 }
 
 .onBack {

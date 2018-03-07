@@ -1,4 +1,6 @@
 import React from 'react';
+import { Placeholder } from "./Placeholder";
+import { Spinner } from "./Spinner";
 
 export const MoviePage = ({ details, reviews }) => {
   return (
@@ -46,12 +48,17 @@ const MovieMetrics = (movie) => {
 const MovieReviews = ({ reviews }) => {
   return (
     <div className="MovieReviews">
-      {reviews.map((review, index) => (
-        <div className="review" key={index}>
-          <div className="summary">{review.summary}</div>
-          <div className="author">{review.author}</div>
-        </div>
-      ))}
+      <Placeholder
+        isLoading={reviews === null}
+        fallback={<Spinner size="medium" />}
+      >
+        {(reviews || []).map((review, index) => (
+          <div className="review" key={index}>
+            <div className="summary">{review.summary}</div>
+            <div className="author">{review.author}</div>
+          </div>
+        ))}
+      </Placeholder>
     </div>
   );
 };
