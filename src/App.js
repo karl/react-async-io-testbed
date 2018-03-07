@@ -83,7 +83,7 @@ export class App extends Component {
       <div>
         {showDetail
           ? this.renderDetail(currentId, details, reviews, isLoading)
-          : this.renderList()}
+          : this.renderList(isLoading ? currentId : null)}
       </div>
     );
   }
@@ -101,9 +101,10 @@ export class App extends Component {
     );
   }
 
-  renderList() {
+  renderList(loadingId) {
     return (
       <MovieListPage
+        loadingId={loadingId}
         onMovieClick={(id) => this.handleMovieClick(id)}
       />
     );
