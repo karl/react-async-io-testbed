@@ -1,22 +1,21 @@
 import React from 'react';
-import { movieDetailsJSON, movieReviewsJSON } from './api';
+import { movieReviewsJSON } from './api';
 
-export const MoviePage = ({ id }) => {
+export const MoviePage = ({ id, details }) => {
   return (
     <div>
-      <MovieDetails id={id} />
+      <MovieDetails details={details} />
       <MovieReviews id={id} />
     </div>
   );
 };
 
-const MovieDetails = ({ id }) => {
-  const movie = movieDetailsJSON[id];
+const MovieDetails = ({ details }) => {
   return (
     <div className="MovieDetails">
-      <MoviePoster src={movie.poster} />
-      <h1>{movie.title}</h1>
-      <MovieMetrics {...movie} />
+      <MoviePoster src={details.poster} />
+      <h1>{details.title}</h1>
+      <MovieMetrics {...details} />
     </div>
   );
 };

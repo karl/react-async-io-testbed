@@ -1,18 +1,43 @@
 import React, { Component } from 'react';
 import { MoviePage } from './MoviePage';
-import { moviesOverview } from './api';
-import './App.css';
+import { moviesOverview, fetchMovieDetails } from './api';
+import { Placeholder } from './placeholder';
+import { Spinner } from './spinner';
+import { delay } from './delay';
 
 export class App extends Component {
   state = {
     currentId: null,
     showDetail: false,
+    isLoading: false,
+    details: null,
   };
 
   handleMovieClick = (id) => {
     this.setState({
       currentId: id,
-      showDetail: true,
+      isLoading: true,
+    });
+
+    delay(1500).then(() => {
+      if (this.state.currentId !== id) {
+        return;
+      }
+
+      this.setState({
+        showDetail: true,
+      });
+    });
+
+    fetchMovieDetails(id).then((details) => {
+      if (this.state.currentId !== id) {
+        return;
+      }
+
+      this.setState({
+        isLoading: false,
+        details,
+      });
     });
   };
 
@@ -20,24 +45,31 @@ export class App extends Component {
     this.setState({
       currentId: null,
       showDetail: false,
+      details: null,
     });
   };
 
   render() {
-    const { currentId, showDetail } = this.state;
+    const { currentId, showDetail, details, isLoading } = this.state;
 
     return (
-      <div>{showDetail ? this.renderDetail(currentId) : this.renderList()}</div>
+      <div>
+        {showDetail
+          ? this.renderDetail(currentId, details, isLoading)
+          : this.renderList()}
+      </div>
     );
   }
 
-  renderDetail(id) {
+  renderDetail(id, details, isLoading) {
     return (
       <div>
         <button className="onBack" onClick={this.handleBackClick}>
           {'👈'}
         </button>
-        <MoviePage id={id} />
+        <Placeholder isLoading={isLoading} fallback={<Spinner size="large" />}>
+          <MoviePage id={id} details={details} />
+        </Placeholder>
       </div>
     );
   }

@@ -1,3 +1,5 @@
+import { delay } from './delay';
+
 export const moviesOverview = [
   {
     id: 1,
@@ -129,4 +131,9 @@ export const movieReviewsJSON = {
       author: 'Ben Sachs, Chicago Reader',
     },
   ],
+};
+
+export const fetchMovieDetails = async (id) => {
+  await delay(3000);
+  return movieDetailsJSON[id];
 };

@@ -89,3 +89,13 @@ body {
   margin-top: 1rem;
   color: #888;
 }
+
+.Spinner {
+  text-align: center;
+  animation: spin infinite 2s linear reverse;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
