@@ -137,3 +137,8 @@ export const fetchMovieDetails = async (id) => {
   await delay(3000);
   return movieDetailsJSON[id];
 };
+
+export const fetchMovieReviews = async (id) => {
+  await delay(3000);
+  return movieReviewsJSON[id];
+};

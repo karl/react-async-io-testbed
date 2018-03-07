@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MoviePage } from './MoviePage';
-import { moviesOverview, fetchMovieDetails } from './api';
+import { moviesOverview, fetchMovieDetails, fetchMovieReviews } from './api';
 import { Placeholder } from './placeholder';
 import { Spinner } from './spinner';
 import { delay } from './delay';
@@ -11,6 +11,7 @@ export class App extends Component {
     showDetail: false,
     isLoading: false,
     details: null,
+    reviews: null,
   };
 
   handleMovieClick = (id) => {
@@ -29,14 +30,36 @@ export class App extends Component {
       });
     });
 
-    fetchMovieDetails(id).then((details) => {
+    const detailsFetch = fetchMovieDetails(id);
+    const reviewsFetch = fetchMovieReviews(id);
+
+    detailsFetch.then((details) => {
+      if (this.state.currentId !== id) {
+        return;
+      }
+
+      this.setState({
+        details,
+      });
+    });
+
+    reviewsFetch.then((reviews) => {
+      if (this.state.currentId !== id) {
+        return;
+      }
+
+      this.setState({
+        reviews,
+      });
+    });
+
+    Promise.all([reviewsFetch, detailsFetch]).then(() => {
       if (this.state.currentId !== id) {
         return;
       }
 
       this.setState({
         isLoading: false,
-        details,
       });
     });
   };
@@ -44,31 +67,33 @@ export class App extends Component {
   handleBackClick = () => {
     this.setState({
       currentId: null,
+      isLoading: false,
       showDetail: false,
       details: null,
+      reviews: null,
     });
   };
 
   render() {
-    const { currentId, showDetail, details, isLoading } = this.state;
+    const { currentId, showDetail, details, reviews, isLoading } = this.state;
 
     return (
       <div>
         {showDetail
-          ? this.renderDetail(currentId, details, isLoading)
+          ? this.renderDetail(currentId, details, reviews, isLoading)
           : this.renderList()}
       </div>
     );
   }
 
-  renderDetail(id, details, isLoading) {
+  renderDetail(id, details, reviews, isLoading) {
     return (
       <div>
         <button className="onBack" onClick={this.handleBackClick}>
           {'👈'}
         </button>
         <Placeholder isLoading={isLoading} fallback={<Spinner size="large" />}>
-          <MoviePage id={id} details={details} />
+          <MoviePage id={id} details={details} reviews={reviews} />
         </Placeholder>
       </div>
     );

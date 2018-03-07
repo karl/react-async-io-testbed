@@ -1,11 +1,10 @@
 import React from 'react';
-import { movieReviewsJSON } from './api';
 
-export const MoviePage = ({ id, details }) => {
+export const MoviePage = ({ details, reviews }) => {
   return (
     <div>
       <MovieDetails details={details} />
-      <MovieReviews id={id} />
+      <MovieReviews reviews={reviews} />
     </div>
   );
 };
@@ -44,8 +43,7 @@ const MovieMetrics = (movie) => {
   );
 };
 
-const MovieReviews = ({ id }) => {
-  const reviews = movieReviewsJSON[id];
+const MovieReviews = ({ reviews }) => {
   return (
     <div className="MovieReviews">
       {reviews.map((review, index) => (
