@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { fetchMovieDetails, fetchMovieReviews } from './api';
 import { MoviePage } from './MoviePage';
 import { MovieListPage } from './MovieListPage';
-import { delay } from './delay';
 
 export class App extends Component {
   state = {
