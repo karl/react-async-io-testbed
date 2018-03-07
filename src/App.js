@@ -2,14 +2,11 @@ import React, { Component } from 'react';
 import { fetchMovieDetails, fetchMovieReviews } from './api';
 import { MoviePage } from './MoviePage';
 import { MovieListPage } from './MovieListPage';
-import { Placeholder } from './Placeholder';
-import { Spinner } from './Spinner';
 import { delay } from './delay';
 
 export class App extends Component {
   state = {
     currentId: null,
-    showDetail: false,
     isLoading: false,
     details: null,
     reviews: null,
@@ -19,16 +16,6 @@ export class App extends Component {
     this.setState({
       currentId: id,
       isLoading: true,
-    });
-
-    delay(1500).then(() => {
-      if (this.state.currentId !== id) {
-        return;
-      }
-
-      this.setState({
-        showDetail: true,
-      });
     });
 
     const detailsFetch = fetchMovieDetails(id);
@@ -70,18 +57,17 @@ export class App extends Component {
     this.setState({
       currentId: null,
       isLoading: false,
-      showDetail: false,
       details: null,
       reviews: null,
     });
   };
 
   render() {
-    const { currentId, showDetail, details, reviews, isLoading } = this.state;
+    const { currentId, details, reviews, isLoading } = this.state;
 
     return (
       <div>
-        {showDetail
+        {currentId !== null && !isLoading
           ? this.renderDetail(currentId, details, reviews, isLoading)
           : this.renderList(isLoading ? currentId : null)}
       </div>
@@ -94,9 +80,7 @@ export class App extends Component {
         <button className="onBack" onClick={this.handleBackClick}>
           {'👈'}
         </button>
-        <Placeholder isLoading={isLoading} fallback={<Spinner size="large" />}>
-          <MoviePage id={id} details={details} reviews={reviews} />
-        </Placeholder>
+        <MoviePage id={id} details={details} reviews={reviews} />
       </div>
     );
   }
