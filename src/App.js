@@ -30,6 +30,7 @@ export class App extends Component {
     isLoading: false,
     details: null,
     reviews: null,
+    poster: null,
   };
 
   setStateIfCurrent = (id, state) => {
@@ -81,6 +82,7 @@ export class App extends Component {
       isLoading: false,
       details: null,
       reviews: null,
+      poster: null,
     });
   };
 
