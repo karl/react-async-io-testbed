@@ -13,8 +13,8 @@ The latest version of this repo is deployed here:
 
 ## Screenshots
 
-<img src="./List.png" style="max-width: 400px" />
-<img src="./Details.png" style="max-width: 400px" />
+![List](./list.png)
+![Details](./details.png)
 
 ## Observations
 
