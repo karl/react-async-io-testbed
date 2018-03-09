@@ -32,6 +32,14 @@ export class App extends Component {
     reviews: null,
   };
 
+  setStateIfCurrent = (id, state) => {
+    if (this.state.currentId !== id) {
+      return;
+    }
+
+    this.setState(state);
+  };
+
   handleMovieClick = (id) => {
     this.setState({
       currentId: id,
@@ -39,31 +47,19 @@ export class App extends Component {
     });
 
     const detailsFetch = movieDetailsFetcher.read(id).then((details) => {
-      if (this.state.currentId !== id) {
-        return;
-      }
-
-      this.setState({
+      this.setStateIfCurrent(id, {
         details,
       });
 
       return imageFetcher.read(details.poster).then((poster) => {
-        if (this.state.currentId !== id) {
-          return;
-        }
-
-        this.setState({
+        this.setStateIfCurrent(id, {
           poster,
         });
       });
     });
 
     movieReviewsFetcher.read(id).then((reviews) => {
-      if (this.state.currentId !== id) {
-        return;
-      }
-
-      this.setState({
+      this.setStateIfCurrent(id, {
         reviews,
       });
     });
@@ -73,11 +69,7 @@ export class App extends Component {
     });
 
     Promise.all([detailsFetch, moviePageLoad]).then(() => {
-      if (this.state.currentId !== id) {
-        return;
-      }
-
-      this.setState({
+      this.setStateIfCurrent(id, {
         isLoading: false,
       });
     });
