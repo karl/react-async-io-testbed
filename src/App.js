@@ -3,6 +3,14 @@ import { fetchMovieDetails, fetchMovieReviews } from './api';
 import { MovieListPage } from './MovieListPage';
 import { createFetcher } from './createFetcher';
 
+const movieDetailsFetcher = createFetcher((id) => {
+  return fetchMovieDetails(id);
+});
+
+const movieReviewsFetcher = createFetcher((id) => {
+  return fetchMovieReviews(id);
+});
+
 const moviePageFetcher = createFetcher(async () => {
   const { MoviePage } = await import('./MoviePage');
   return MoviePage;
@@ -30,7 +38,7 @@ export class App extends Component {
       isLoading: true,
     });
 
-    const detailsFetch = fetchMovieDetails(id).then((details) => {
+    const detailsFetch = movieDetailsFetcher.read(id).then((details) => {
       if (this.state.currentId !== id) {
         return;
       }
@@ -50,7 +58,7 @@ export class App extends Component {
       });
     });
 
-    fetchMovieReviews(id).then((reviews) => {
+    movieReviewsFetcher.read(id).then((reviews) => {
       if (this.state.currentId !== id) {
         return;
       }
