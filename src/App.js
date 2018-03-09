@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { fetchMovieDetails, fetchMovieReviews } from './api';
 import { MovieListPage } from './MovieListPage';
-import { cachedAsync } from './utils';
+import { createFetcher } from './createFetcher';
 
-const cachedMoviePageLoader = cachedAsync(async () => {
+const moviePageFetcher = createFetcher(async () => {
   const { MoviePage } = await import('./MoviePage');
   return MoviePage;
+});
+
+const imageFetcher = createFetcher((src) => {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => resolve(src);
+    image.src = src;
+  });
 });
 
 export class App extends Component {
@@ -22,11 +30,7 @@ export class App extends Component {
       isLoading: true,
     });
 
-    const detailsFetch = fetchMovieDetails(id);
-    const reviewsFetch = fetchMovieReviews(id);
-    const moviePageLoad = cachedMoviePageLoader();
-
-    detailsFetch.then((details) => {
+    const detailsFetch = fetchMovieDetails(id).then((details) => {
       if (this.state.currentId !== id) {
         return;
       }
@@ -34,9 +38,19 @@ export class App extends Component {
       this.setState({
         details,
       });
+
+      return imageFetcher.read(details.poster).then((poster) => {
+        if (this.state.currentId !== id) {
+          return;
+        }
+
+        this.setState({
+          poster,
+        });
+      });
     });
 
-    reviewsFetch.then((reviews) => {
+    fetchMovieReviews(id).then((reviews) => {
       if (this.state.currentId !== id) {
         return;
       }
@@ -46,7 +60,7 @@ export class App extends Component {
       });
     });
 
-    moviePageLoad.then((MoviePage) => {
+    const moviePageLoad = moviePageFetcher.read().then((MoviePage) => {
       this.MoviePage = MoviePage;
     });
 
