@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { fetchMovieDetails, fetchMovieReviews } from './api';
-import { MoviePage } from './MoviePage';
 import { MovieListPage } from './MovieListPage';
+import { cachedAsync } from './utils';
+
+const cachedMoviePageLoader = cachedAsync(async () => {
+  const { MoviePage } = await import('./MoviePage');
+  return MoviePage;
+});
 
 export class App extends Component {
   state = {
@@ -19,6 +24,7 @@ export class App extends Component {
 
     const detailsFetch = fetchMovieDetails(id);
     const reviewsFetch = fetchMovieReviews(id);
+    const moviePageLoad = cachedMoviePageLoader();
 
     detailsFetch.then((details) => {
       if (this.state.currentId !== id) {
@@ -27,7 +33,6 @@ export class App extends Component {
 
       this.setState({
         details,
-        isLoading: false,
       });
     });
 
@@ -41,15 +46,19 @@ export class App extends Component {
       });
     });
 
-    // Promise.all([reviewsFetch, detailsFetch]).then(() => {
-    //   if (this.state.currentId !== id) {
-    //     return;
-    //   }
+    moviePageLoad.then((MoviePage) => {
+      this.MoviePage = MoviePage;
+    });
 
-    //   this.setState({
-    //     isLoading: false,
-    //   });
-    // });
+    Promise.all([detailsFetch, moviePageLoad]).then(() => {
+      if (this.state.currentId !== id) {
+        return;
+      }
+
+      this.setState({
+        isLoading: false,
+      });
+    });
   };
 
   handleBackClick = () => {
@@ -79,7 +88,7 @@ export class App extends Component {
         <button className="onBack" onClick={this.handleBackClick}>
           {'👈'}
         </button>
-        <MoviePage id={id} details={details} reviews={reviews} />
+        <this.MoviePage id={id} details={details} reviews={reviews} />
       </div>
     );
   }
